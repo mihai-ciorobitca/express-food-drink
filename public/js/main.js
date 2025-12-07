@@ -353,7 +353,7 @@ function App() {
         ),
 
         // Reviews
-        React.createElement(GoogleReviewsSlider, { placeId: "" }),
+        React.createElement(GoogleReviewsSlider, { placeId: "EjpTdHJhZGEgTWloYWlsIEtvZ8SDbG5pY2VhbnUsIDYxNTIwMCBUw6JyZ3UgTmVhbcibLCBSb21hbmlhIi4qLAoUChIJnUw23ThHNUcROg7HxWyRCMQSFAoSCaVr7rI9RzVHEVF1hFWGm" }),
 
         // FOOTER
         React.createElement("footer", { className: "bg-gray-800 text-white py-12" },
