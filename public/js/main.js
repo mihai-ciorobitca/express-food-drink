@@ -4,7 +4,6 @@ const { Fragment, useState, useEffect } = React;
 function HeroBanner() {
     const burgerImages = [
         "https://images.unsplash.com/photo-1600891964599-f61ba0e24092?crop=entropy&cs=tinysrgb&fit=max&h=400&w=600",
-        "https://images.unsplash.com/photo-1600891964599-f61ba0e24092?crop=entropy&cs=tinysrgb&fit=max&h=400&w=600",
         "https://images.unsplash.com/photo-1600891964599-f61ba0e24092?crop=entropy&cs=tinysrgb&fit=max&h=400&w=600"
     ];
 
@@ -20,14 +19,14 @@ function HeroBanner() {
     return React.createElement(
         "section",
         { className: "bg-yellow-100 py-20 px-6 mt-12 rounded-t-3xl text-center" },
-        // titlu animat
         React.createElement(
             "h2",
             { className: "ff-title text-5xl mb-6" },
-            React.createElement("span", { className: "text-yellow-400 mr-2" }, "Burger"),
-            React.createElement("span", { className: "text-red-500 animate-bounce inline-block" }, "Time")
+            React.createElement("span", { className: "text-green-500 mr-2" }, "Express"),
+            React.createElement("span", { className: "text-yellow-400 animate-bounce inline-block mx-1" }, "Food"),
+            React.createElement("span", { className: "text-gray mx-1" }, "&"),
+            React.createElement("span", { className: "text-red-500 animate-bounce inline-block mx-1" }, "Drinks")
         ),
-        // slider
         React.createElement(
             "div",
             { className: "mx-auto mb-4 w-full max-w-4xl rounded-2xl overflow-hidden relative bg-gray-100" },
@@ -47,13 +46,14 @@ function HeroBanner() {
                 )
             )
         ),
-        // descriere
         React.createElement(
             "p",
             { className: "text-center text-lg max-w-2xl mx-auto text-gray-800" },
-            "Descoperă burgeri suculenți și meniuri delicioase. Cartofi crocanți și băuturi răcoritoare completează experiența Burger Time!"
+            "Descoperă burgeri suculenți, kebab savuros, meniuri complete și salate proaspete. Livram la domiciliu!"
         )
     );
+
+
 }
 
 function GoogleReviewsSlider({ placeId }) {
@@ -63,6 +63,7 @@ function GoogleReviewsSlider({ placeId }) {
     const [totalRatings, setTotalRatings] = React.useState(0);
 
     React.useEffect(() => {
+        if (!window.google || !google.maps) return;
         const map = new google.maps.Map(document.createElement("div"));
         const service = new google.maps.places.PlacesService(map);
 
@@ -73,11 +74,10 @@ function GoogleReviewsSlider({ placeId }) {
             },
             (place, status) => {
                 if (status === google.maps.places.PlacesServiceStatus.OK) {
-                    const positiveReviews = place.reviews.filter(r => r.rating >= 3);
+                    const positiveReviews = (place.reviews || []).filter(r => r.rating >= 3);
                     setReviews(positiveReviews);
-
-                    setAverageRating(place.rating);
-                    setTotalRatings(place.user_ratings_total);
+                    setAverageRating(place.rating || 0);
+                    setTotalRatings(place.user_ratings_total || 0);
                 }
             }
         );
@@ -115,7 +115,6 @@ function GoogleReviewsSlider({ placeId }) {
         React.createElement(
             "div",
             { className: "max-w-4xl mx-auto bg-white rounded-3xl shadow-2xl p-10" },
-            // Media recenziilor în interiorul cardului
             React.createElement(
                 "div",
                 { className: "text-center mb-6" },
@@ -135,7 +134,6 @@ function GoogleReviewsSlider({ placeId }) {
                     `(${totalRatings} recenzii reale)`
                 )
             ),
-            // Review individual
             React.createElement(
                 "div",
                 { className: "text-center" },
@@ -169,32 +167,58 @@ function GoogleReviewsSlider({ placeId }) {
     );
 }
 
-
 function App() {
     const [menuOpen, setMenuOpen] = useState(false);
     const placeholderImg = "https://images.unsplash.com/photo-1550547660-d9450f859349?crop=entropy&cs=tinysrgb&fit=max&h=400&w=600";
 
+    // MENIU actualizat din datele oferite
     const menuData = [
         {
-            category: "MENIU BURGERI", items: [
-                { name: "CheeseBurger", price: "Singur: 20,90 lei / Combo: 31 lei", desc: "Chiflă cu susan, carne de vită 100 g, cașcaval, salată iceberg, roșii, ceapă, castraveți murați, sos BurgerTime, maioneză, ketchup" },
-                { name: "Double CheeseBurger", price: "Singur: 29,90 lei / Combo: 39 lei", desc: "Chiflă cu susan, 2 x carne de vită 100 g, 2 felii cașcaval, salată iceberg, roșii, ceapă, castraveți murați, sos BurgerTime, maioneză, ketchup" },
-                { name: "X-Burger", price: "Singur: 25,90 lei / Combo: 35 lei", desc: "Chiflă cu susan, carne de vită 150 g, cașcaval, bacon crocant, salată iceberg, roșii, ceapă roșie, castraveți murați, sos BurgerTime, maioneză" },
-                { name: "CrispyBurger Mare", price: "Singur: 19,90 lei / Combo: 29 lei", desc: "Chiflă cu susan, piept de pui crispy, salată iceberg, maioneză, sos dulce-acrișor" },
-                { name: "CrispyBurger Mic", price: "Singur: 16,90 lei / Combo: ~26 lei", desc: "Aceeași compoziție ca mai sus, porție mai mică de pui" },
+            category: "BURGERI",
+            items: [
+                { name: "Big Double Burger", price: "40 LEI", weight: "250g", ingredients: "Carne de vită Angus, chiflă, salată, brânză cheddar, castraveți murați, roșii, barbeque, maioneză" },
+                { name: "Burger Vită", price: "30 LEI", weight: "200g", ingredients: "Carne de vită Angus, chiflă, salată, brânză cheddar, castraveți murați, roșii, barbeque, maioneză" },
+                { name: "Burger Porc", price: "28 LEI", weight: "300g", ingredients: "Carne de porc, chiflă, salată, brânză cheddar, castraveți murați, roșii, barbeque, maioneză" },
+                { name: "Burger Pui", price: "27 LEI", weight: "320g", ingredients: "Carne de pui, chiflă, salată, brânză cheddar, castraveți murați, roșii, barbeque, maioneză" },
+                { name: "Burger Crispy", price: "27 LEI", weight: "300g", ingredients: "Crispy de pui, chiflă, salată, brânză cheddar, castraveți murați, roșii, barbeque, maioneză" },
+                { name: "Burger Șnitel", price: "27 LEI", weight: "380g", ingredients: "Șnițel de pui, chiflă, salată, brânză cheddar, castraveți murați, roșii, barbeque, maioneză" },
+                { name: "Burger Vegetal", price: "22 LEI", weight: "300g", ingredients: "Mix de legume în crustă de pesmet, chiflă, salată, castraveți murați, roșii, maioneză vegetală" },
+                { name: "Burger Somon", price: "35 LEI", weight: "300g", ingredients: "Somon, chiflă, maioneză vegetală, castraveți murați, roșii, ceapă roșie" }
             ]
         },
         {
-            category: "CARTOFI PRAJITI", items: [
-                { name: "Cartofi prăjiți Mică", price: "9 lei", desc: "Porție mică, crocanți și delicioși" },
-                { name: "Cartofi prăjiți Mare", price: "12 lei", desc: "Porție mare, crocanți și delicioși" },
+            category: "KEBAB",
+            items: [
+                { name: "Kebab Pui la Farfurie", price: "25 LEI", ingredients: "" },
+                { name: "Kebab Porc la Farfurie", price: "25 LEI", ingredients: "" },
+                { name: "Kebab Porc la Lipie", price: "28 LEI", ingredients: "" },
+                { name: "Kebab MINT la Lipie", price: "25 LEI", ingredients: "" },
+                { name: "Kebab MINT la Farfurie", price: "25 LEI", ingredients: "" },
+                { name: "Falafel la Farfurie", price: "20 LEI", ingredients: "" },
+                { name: "Falafel la Lipie", price: "17 LEI", ingredients: "" }
             ]
         },
         {
-            category: "BĂUTURI", items: [
-                { name: "Băuturi răcoritoare 0,4 l", price: "4,90 lei", desc: "Cola, Fanta, Sprite" },
-                { name: "Băuturi răcoritoare 0,5 l", price: "6 lei", desc: "Cola, Fanta, Sprite" },
-                { name: "Băuturi calde", price: "8-14 lei", desc: "Cafea, cappuccino, ceai etc." },
+            category: "MENIURI",
+            items: [
+                { name: "Meniu Șnitel", price: "28 LEI", ingredients: "" },
+                { name: "Meniu Crispy", price: "28 LEI", ingredients: "" },
+                { name: "Meniu Aripioare", price: "28 LEI", ingredients: "" },
+                { name: "Meniu Ceafă", price: "35 LEI", ingredients: "" },
+                { name: "Meniu Piept", price: "32 LEI", ingredients: "" },
+                { name: "Meniu Pulpă", price: "32 LEI", ingredients: "" },
+                { name: "Meniu Mix Grill", price: "60 LEI", ingredients: "" }
+            ]
+        },
+        {
+            category: "SALATE",
+            items: [
+                { name: "Salată cu Pui", price: "27 LEI", ingredients: "" },
+                { name: "Salată cu Crispy", price: "27 LEI", ingredients: "" },
+                { name: "Salată cu Ton", price: "27 LEI", ingredients: "" },
+                { name: "Salată Grecească", price: "22 LEI", ingredients: "" },
+                { name: "Salată Asortată", price: "10 LEI", ingredients: "" },
+                { name: "Salată de Murături", price: "10 LEI", ingredients: "" }
             ]
         }
     ];
@@ -213,8 +237,13 @@ function App() {
         // NAVBAR
         React.createElement("nav", { className: "fixed top-0 w-full bg-white shadow z-50" },
             React.createElement("div", { className: "max-w-6xl mx-auto px-6 py-4 flex justify-between items-center" },
-                React.createElement("h1", { className: "ff-title text-3xl text-red-500" }, "Burger Time"),
-                React.createElement("button", { className: "md:hidden text-gray-700 text-3xl", onClick: () => setMenuOpen(true) }, "☰"),
+                React.createElement("h1", { className: "ff-title text-3xl text-red-500" }, "Express Food & Drinks"),
+                React.createElement("div", { className: "flex items-center gap-6" },
+                    React.createElement("div", { className: "text-sm text-gray-700" },
+                        React.createElement("span", null, "Livram la domiciliu! ")
+                    ),
+                    React.createElement("button", { className: "md:hidden text-gray-700 text-3xl", onClick: () => setMenuOpen(true) }, "☰")
+                ),
                 React.createElement("ul", { className: "hidden md:flex gap-6" },
                     sections.map(sec =>
                         React.createElement("li", { key: sec },
@@ -229,20 +258,64 @@ function App() {
 
         // SECTIUNI MENIU
         menuData.map(category =>
-            React.createElement("section", { key: category.category, id: category.category, className: "max-w-6xl mx-auto px-6 py-16" },
-                React.createElement("h2", { className: "ff-title text-4xl mb-8 text-center text-red-600" }, category.category),
-                React.createElement("div", { className: "grid md:grid-cols-3 gap-8" },
+            React.createElement(
+                "section",
+                { key: category.category, id: category.category, className: "max-w-6xl mx-auto px-6 py-16" },
+
+                React.createElement(
+                    "h2",
+                    { className: "ff-title text-4xl mb-8 text-center text-red-600" },
+                    category.category
+                ),
+
+                React.createElement(
+                    "div",
+                    { className: "grid md:grid-cols-3 gap-8" },
+
                     category.items.map(item =>
-                        React.createElement("div", { key: item.name, className: "bg-white shadow-lg rounded-2xl p-4 hover:shadow-2xl transition transform hover:scale-105 flex flex-col justify-between" },
-                            React.createElement("img", { src: placeholderImg, alt: item.name, className: "w-full h-48 object-cover rounded-xl mb-4" }),
-                            React.createElement("h3", { className: "text-2xl ff-title text-gray-900 text-center mb-2" }, item.name),
-                            React.createElement("p", { className: "text-gray-700 text-center mb-4" }, item.desc),
-                            React.createElement("p", { className: "text-red-500 font-bold text-xl text-center" }, item.price)
+                        React.createElement(
+                            "div",
+                            {
+                                key: item.name,
+                                className:
+                                    "bg-white shadow-lg rounded-2xl p-4 hover:shadow-2xl transition transform hover:scale-105 flex flex-col justify-between"
+                            },
+
+                            // imagine
+                            React.createElement("img", {
+                                src: placeholderImg,
+                                alt: item.name,
+                                className: "w-full h-48 object-cover rounded-xl mb-4"
+                            }),
+
+                            // TITLU + GRAMAJ (LA FINAL)
+                            React.createElement(
+                                "h3",
+                                { className: "text-2xl ff-title text-gray-900 text-center mb-2" },
+                                item.weight
+                                    ? `${item.name} (${item.weight})`
+                                    : item.name
+                            ),
+
+                            // INGREDIENTE
+                            React.createElement(
+                                "p",
+                                { className: "text-gray-700 text-center mb-4" },
+                                item.ingredients || "\u00A0"
+                            ),
+
+                            // PREȚ LA FINAL
+                            React.createElement(
+                                "p",
+                                { className: "text-red-500 font-bold text-xl text-center mt-auto" },
+                                item.price || ""
+                            )
                         )
                     )
                 )
             )
         ),
+
 
         // CONTACT
         React.createElement("section", { className: "max-w-4xl mx-auto px-6 py-16" },
@@ -256,7 +329,7 @@ function App() {
                     ),
                     React.createElement("p", { className: "text-lg mb-4 flex items-center gap-3" },
                         React.createElement("img", { src: "https://cdn-icons-png.flaticon.com/512/159/159832.png", alt: "Telefon", className: "w-6 h-6" }),
-                        "0740 987 654"
+                        React.createElement("span", null, "0771 334 379")
                     ),
                     React.createElement("p", { className: "text-lg mb-4 flex items-center gap-3 whitespace-pre-line" },
                         React.createElement("img", { src: "https://cdn-icons-png.flaticon.com/512/565/565313.png", alt: "Program", className: "w-6 h-6" }),
@@ -264,8 +337,8 @@ function App() {
                     ),
                     React.createElement("p", { className: "text-lg flex items-center gap-3" },
                         React.createElement("img", { src: "https://cdn-icons-png.flaticon.com/512/732/732200.png", alt: "Email", className: "w-6 h-6" }),
-                        "contact@burgertime.ro"
-                    )
+                        "contact@express-food-drinks.ro"
+                    ),
                 ),
 
                 React.createElement("div", null,
@@ -279,15 +352,14 @@ function App() {
             )
         ),
 
-         // Reviews
-        React.createElement(GoogleReviewsSlider, { placeId: "ChIJZUUJMX9HNUcR45rsgPTiKuM" }),
-
+        // Reviews
+        React.createElement(GoogleReviewsSlider, { placeId: "" }),
 
         // FOOTER
         React.createElement("footer", { className: "bg-gray-800 text-white py-12" },
             React.createElement("div", { className: "max-w-6xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-8" },
                 React.createElement("div", { className: "text-center md:text-left" },
-                    React.createElement("h1", { className: "text-2xl font-bold mb-1" }, "Burger Time"),
+                    React.createElement("h1", { className: "text-2xl font-bold mb-1" }, "Express Food & Drinks"),
                     React.createElement("p", { className: "text-gray-300 text-sm" }, "Fast Food Târgu Neamț")
                 ),
                 React.createElement("div", { className: "text-center" },
@@ -308,7 +380,7 @@ function App() {
                 )
             ),
             React.createElement("div", { className: "mt-8 text-center text-gray-400 text-sm" },
-                "© 2025 Burger Time. Toate drepturile rezervate."
+                "© 2025 Express Food & Drinks. Toate drepturile rezervate."
             )
         ),
 
