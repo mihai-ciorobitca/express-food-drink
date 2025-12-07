@@ -107,7 +107,7 @@ function GoogleReviewsSlider({ placeId }) {
             React.createElement(
                 "h2",
                 { className: "ff-title text-4xl text-red-600 text-center mb-12" },
-                "Recenzii Clienti"
+                "Recenzii"
             ),
             React.createElement(
                 "div",
